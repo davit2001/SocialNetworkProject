@@ -2,6 +2,7 @@ const User = require("../models/user-schema");
 const userMessage = require("../models/user_message");
 
 class Message {
+  
  /* add message  */
   async add(msg) {
     
@@ -19,6 +20,7 @@ class Message {
       console.log("error on save message: ", err);
     }
   }
+
  /* get chat messages */
   async getAllMessages(obj) {
     let message = await userMessage.find({ $or: [{ from: obj.from, to: obj.chatWith }, { from: obj.chatWith, to: obj.from, }] });

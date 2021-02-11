@@ -28,18 +28,18 @@ class SignUpRouter {
         }
     }
     async loginUser(req, res) {
-        let token = req.headers.xaccesstoken;
-        if (token === "undefined" || token === "null" || token === undefined || token === null) {
+        let accessToken = req.cookies['x-access-token'];
+        if (accessToken === "undefined" || accessToken === "null" || accessToken === undefined || accessToken === null) {
           //  console.log("token isnt sign: normala es ysenc pti ashxati")
         } else {
             try {
-                let decoded = jwt.verify(token, "esim");
+                let decoded = jwt.verify(accessToken, "accessToken");
                 if (decoded.email === req.body.login && decoded.password === req.body.password) {
-                    return { email: email, token: token, tokenExpiration: 1 };
+                    return { email: email, accessToken: accessToken, tokenExpiration: 1 };
                 }
             } catch (err) {
                 console.log("error in verify " + err);
-                throw new Error("error on verify token " + err);
+                throw new Error("error on verify accessToken " + err);
             }
         }
         const user = await User.findOne({ login: req.body.login });
@@ -52,18 +52,27 @@ class SignUpRouter {
             res.json({ log: false, info: "Password is incorrect" });
             return false;
         }
-        token = jwt.sign({ 
+        accessToken = jwt.sign({ 
             userId: user._id,
             name:user.name,
             friends:user.friend, 
             email: user.email,
             password: user.password,
             userImg:user.profilePhotos
-        }, "esim", {
-            expiresIn: "20d",
+        }, "accessToken", {
+            expiresIn: "30s",
         });
-        res.cookie("x-access-token", token);
-        res.json({ userId: user._id,  email: user.email, token: token, tokenExpiration: 1, log: true });
+
+        let refreshToken = jwt.sign({ 
+            userId: user._id,
+            name:user.name,
+        }, "refreshToken", {
+            expiresIn: "1y",
+        });
+
+        res.cookie("x-access-token", accessToken,{maxAge:30*1000});
+        res.cookie("refreshToken",refreshToken,{maxAge:60*60*24*365*1000})
+        res.json({ userId: user._id,  email: user.email, accessToken: accessToken, tokenExpiration: 1, log: true });
         //res.sendFile(__dirname + "/views/" + "newsfeed.html")
     }
     sendRegistCode(req, res) {

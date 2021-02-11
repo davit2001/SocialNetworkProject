@@ -53,7 +53,10 @@ socket.on('ConfirmRequest', async (data) => {
 })
   
 
-  
+  socket.on('Offline',(userId)=>{
+    updateOnlineToFalse(userId)
+  })
+
   socket.on('disconnect',async () => {
     await updateOnlineToFalse(socketObj["userId"]);
     io.emit('onlineUsers', await onlineUsers());

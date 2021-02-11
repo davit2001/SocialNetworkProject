@@ -9,6 +9,7 @@ class IndexController {
         let user = await User.findById(req.userObj.userId).exec()
         let profileImg = await User.findById(req.userObj.userId).select({profilePhotos: 1 });
         let onlineUser = await User.find({online:true}).select({name:1,profilePhotos:1}).exec() // get online people
+        
         res.render("newsfeed",{
             Post,
             userId:req.userObj.userId,
@@ -21,6 +22,7 @@ class IndexController {
     
     loginPage(req, res) {
         res.clearCookie('x-access-token')
+        res.clearCookie('refreshToken')
         res.render('index')
     }
     async profilePage(req, res) {
@@ -114,10 +116,12 @@ class IndexController {
             userReqParamId:req.userObj.userId
         })
     }
+    /* Confirm friend request */
     async ConfirmRequest(req, res) {
         let { from, to } = req.body
+        
         try {
-            let user = await User.findOne({ _id: from }).select({ friendRequest: 1, friend: 1,name:1 });
+            let user  =  await User.findOne({ _id: from }).select({ friendRequest: 1, friend: 1,name:1 });
             user.friend.push(to)
             let UserFriendRequest =user.friendRequest 
             let index = UserFriendRequest.indexOf(to)
@@ -141,6 +145,7 @@ class IndexController {
 
     }
 
+    /* Delete Friend Request */
     async DeleteRequest(req,res) {
         let {from,to} = req.body
         try {
