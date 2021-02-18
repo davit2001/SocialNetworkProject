@@ -5,7 +5,7 @@ class Message {
   
  /* add message  */
   async add(msg) {
-    
+    console.log(msg)
     try {
       let msgUser = new userMessage(msg);
       await msgUser.save();

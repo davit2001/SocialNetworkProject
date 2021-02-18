@@ -95,7 +95,7 @@ function checkInputParams() {
   let passValid = /^[A-Za-z]{4,10}$/;
   let checkPassword = 0;
   if (!passValid.test(passwordRegist.value)) {
-    infoPassword.innerHTML = "Password must contain only characters and at least 4 charachters";
+    infoPassword.innerHTML = "Password must contain only letters and at least 4 charachters and does not exceed 10";
     ++checkPassword;
   } else {
     checkPassword = 0;

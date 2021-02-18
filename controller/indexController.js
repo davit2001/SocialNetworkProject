@@ -1,4 +1,3 @@
-const cons = require("consolidate")
 const PostModel = require("../models/PostModel")
 const User = require("../models/user-schema")
 
@@ -34,6 +33,7 @@ class IndexController {
         let profileImg = await User.findById(req.params.id).select({profilePhotos: 1 });
 
         let userProfile = await User.findById(req.userObj.userId).select({profilePhotos: 1 });
+        
         res.render('time-line',{
             name:user.name,
             userPost,
@@ -45,6 +45,7 @@ class IndexController {
             userImg: userProfile.profilePhotos
         })
     }
+
     async userFriends(req, res) {
          try {
             let UserFriends = await User.findOne({ _id: req.userObj.userId }).populate('friend').exec()
@@ -123,6 +124,7 @@ class IndexController {
         try {
             let user  =  await User.findOne({ _id: from }).select({ friendRequest: 1, friend: 1,name:1 });
             user.friend.push(to)
+            
             let UserFriendRequest =user.friendRequest 
             let index = UserFriendRequest.indexOf(to)
             if(index > -1) UserFriendRequest.splice(index,1)

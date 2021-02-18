@@ -57,10 +57,10 @@ socket.on('ConfirmRequest', async (data) => {
     updateOnlineToFalse(userId)
   })
 
-  socket.on('disconnect',async () => {
-    await updateOnlineToFalse(socketObj["userId"]);
-    io.emit('onlineUsers', await onlineUsers());
-  });
+  // socket.on('disconnect',async () => {
+  //   await updateOnlineToFalse(socketObj["userId"]);
+  //   io.emit('onlineUsers', await onlineUsers());
+  // });
 })
 
 async function findUser(userId) {
